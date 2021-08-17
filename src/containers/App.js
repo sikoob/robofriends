@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CardList from '../components/CardList.js';		//'..' bedeutet gehe in überliegenden Ordner und dann
 import SearchBox from '../components/SearchBox.js';
 import Scroll from '../components/Scroll.js';
+import ErrorBoundry from '../components/ErrorBoundry.js';
 import './App.css';
 
 class App extends Component {
@@ -13,13 +14,13 @@ class App extends Component {
 		}
 	}
 
-	componentDidMount() {		//Funktion innerhalb React, daher keine Arrows
+	componentDidMount() {											//Funktion innerhalb React, daher keine Arrows
 		fetch('https://jsonplaceholder.typicode.com/users')			//gibt Ziellink für API-Ressourcen an
 			.then(response => response.json())						//aktiviert Datei-Antwort von Source
 			.then(users => this.setState({ robots: users}));		//Setzt User über bereitgestellte Infos und fügt Inhalte für Robots ein --> Update Cycle in Lifecycle, deshalb danach nochmal Render
 	}
 
-	onSearchChange = (event) => {		//Zwischenfunktion, um Sucheingabe abzufangen
+	onSearchChange = (event) => {											//Zwischenfunktion, um Sucheingabe abzufangen
 		this.setState({ searchfield: event.target.value })					//zum Ändern von State
 	}
 
@@ -36,7 +37,9 @@ class App extends Component {
 				<h1 className='f1'> RoboFriends </h1>
 				<SearchBox searchChange={this.onSearchChange} />
 				<Scroll>
-					<CardList robots={filteredRobots} />			{/*gibt die benötigten Roboter nach Suchfeld-Eingabe wieder.*/}
+					<ErrorBoundry>
+						<CardList robots={filteredRobots} />			{/*gibt die benötigten Roboter nach Suchfeld-Eingabe wieder.*/}
+					</ErrorBoundry>
 				</Scroll>
 			</div>
 		);
